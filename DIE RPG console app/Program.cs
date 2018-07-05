@@ -23,10 +23,45 @@ namespace DIE_RPG_console_app
             testVar = +1;
         }
 
-        //private int hp;
-        //private int attack;
-        //private int defence;
-        //private int dam;
+        public class Page
+        {
+            public int PageNumber;
+            public string Text;
+            public string IntroTextA;
+            public string IntroTextB;
+            public string IntroTextC;
+            public Page PageA;
+            public Page PageB;
+            public Page PageC;
+            public Page DestA;
+            public Page DestB;
+            public Page DestC;
+            public List<Warrior> CombatEncounter;
+            public OffHand ItemPickup;
+
+
+            public Page(int pagenumber, string text, string introTextA, string introTextB, string introTextC)
+            {
+                PageNumber = pagenumber;
+                Text = text;
+                IntroTextA = introTextA;
+                IntroTextB = introTextB;
+                IntroTextC = introTextC;
+            }
+
+            public void EnterRoom(int pagefrom)
+            {                
+
+                Console.WriteLine(Text);
+                string t = Console.ReadLine();
+                switch (t)
+                {                  
+                        
+                        
+                }
+            }
+        }
+
         public class Weapon
         {
             public string Name;
@@ -155,20 +190,56 @@ namespace DIE_RPG_console_app
             Weapon Axe = new Weapon(4, 0, 0, "axe");
             OffHand none = new OffHand(0, 0, "nothing", "NONE");
             OffHand shield = new OffHand(1, 3, "shield", "SHIELD");
-            Warrior player = new Warrior(10, 10, 10, "Fjeldulf", Axe, shield);
+            Warrior player = new Warrior(15, 15, 10, "Fjeldulf", Axe, none);
             Warrior Gundar = new Warrior(10, 5, 10, "Gundar", Axe, shield);
 
             Warrior orc1 = new Warrior(5, 10, 5, "Orc", Axe, none);
+            Page p1 = new Page(1,"You enter Start room", "You come from Shield room", "You come from Orc room", "kys fucking nigger");
+            Page p2 = new Page(2,"You enter Shield room", "You come from Start room ", "You come from Orc room", "kys fucking nigger");
+            Page p3 = new Page(3, "You enter Orc room", "You come from Start room", "You come from Shield room", "kys fucking nigger");
+            Page p4 = new Page(4, "You enter Victory room", "You come from Orc room", "You come from B", "kys fucking nigger");
 
+            List<Warrior> emptyshit = new List<Warrior>();
             List<Warrior> orcs = new List<Warrior>();
             for (int i = 0; i < 3; i++)
             {
                 orcs.Add(new Warrior(5, 5, 5, "Orc", Axe, none));
             }
 
-            GroupCombatStart(player, orcs);
-            Sleep(2);
-            PrintNewline(player.Name + " died after slaying " + orcsSlain + " orcs");
+            p1.PageA = p2;
+            p1.PageB = p3;
+            p1.DestA = p2;
+            p1.DestB = p3;
+            p1.ItemPickup = none;
+            p1.CombatEncounter = emptyshit;
+
+            p2.PageA = p1;
+            p2.PageB = p3;
+            p2.DestA = p1;
+            p2.DestB = p3;
+            p2.ItemPickup = shield;
+            p2.CombatEncounter = emptyshit;
+
+            p3.PageA = p1;
+            p3.PageB = p2;
+            p3.PageC = p4;
+            p3.DestA = p1;
+            p3.DestB = p2;
+            p3.DestC = p4;
+            p3.ItemPickup = none;
+            p3.CombatEncounter = orcs;
+            
+            p4.PageA = p3;
+            p4.PageB = p4;
+            p4.DestA = p3;
+            p4.ItemPickup = none;
+            p4.CombatEncounter = emptyshit;
+
+
+
+            // GroupCombatStart(player, orcs);
+            // Sleep(2);
+            // PrintNewline(player.Name + " died after slaying " + orcsSlain + " orcs");
             // for (int i = 0; 0 < player.Hp; i++)
             // {
             //     Warrior orci = new 
@@ -177,9 +248,8 @@ namespace DIE_RPG_console_app
             //CombatStart(player, Gundar);
 
 
-            
-            //string t = Console.ReadLine();            
-            Console.ReadLine();
+            //string t = Console.ReadLine();  
+            ReadPage(p1, p1, player);            
         }
 
 
@@ -261,6 +331,7 @@ namespace DIE_RPG_console_app
                         PrintNewline(w1.Name + " has been slain");
                         Sleep(1.5);
                         PrintNewline(w2.Name + " is victorious");
+                        Console.ReadLine();
                     }
                     else
                     {
@@ -268,7 +339,7 @@ namespace DIE_RPG_console_app
                         Sleep(1.5);
                         PrintNewline(w1.Name + " is victorious");
                     }
-                }
+                }                
             }
         }
 
@@ -325,7 +396,7 @@ namespace DIE_RPG_console_app
             {
                 PrintNewline(group[i].Name + " has " + group[i].Hp + " HP left");
             }
-            Sleep(group.Count/2 + 1);
+            Sleep(group.Count/2 + 2);
             if (w1.Alive() && GroupAlive(group))
             {
                 if (!firstround)
@@ -348,7 +419,7 @@ namespace DIE_RPG_console_app
                     {
                         PrintNewline(w1.Name + " has been slain");
                         Sleep(1.5);
-                        PrintNewline(group[0].Name + " and his group is victorious");
+                        PrintNewline(group[0].Name + " and his group is victorious");                        
                     }
                     else
                     {
@@ -435,6 +506,73 @@ namespace DIE_RPG_console_app
         public void Sleep(double seconds)
         {
             Thread.Sleep((int)(seconds * readTime));
+        }
+
+
+
+
+        //The narrative script
+        public void ReadPage(Page CurrentPage, Page PageFrom, Warrior player)
+        {
+            if (PageFrom == CurrentPage.PageA)
+                Console.WriteLine(CurrentPage.IntroTextA);
+            if (PageFrom == CurrentPage.PageB)
+                Console.WriteLine(CurrentPage.IntroTextB);
+            if (PageFrom == CurrentPage.PageC)
+                Console.WriteLine(CurrentPage.IntroTextC);
+            Sleep(1);
+            Console.WriteLine(CurrentPage.Text);
+            Sleep(2);
+            if (CurrentPage.ItemPickup.Name == "shield")
+            {
+                player.EquippedOffHand = CurrentPage.ItemPickup;
+                PrintNewline("You have picked up a " + CurrentPage.ItemPickup.Name + "!");
+                OffHand none = new OffHand(0, 0, "nothing", "NONE");
+                CurrentPage.ItemPickup = none;
+                Sleep(2);
+            }
+
+            if (GroupAlive(CurrentPage.CombatEncounter))
+            {
+                GroupCombatStart(player, CurrentPage.CombatEncounter);              
+            }
+            if (player.Alive())
+            {
+                if (CurrentPage.PageNumber == 4)
+                {
+                    PrintNewline("You are victorious, well played!");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    string t = Console.ReadLine();
+                    switch (t)
+                    {
+                        case "a":
+                            ReadPage(CurrentPage.DestA, CurrentPage, player);
+                            break;
+                        case "b":
+                            ReadPage(CurrentPage.DestB, CurrentPage, player);
+                            break;
+                        case "c":
+                            ReadPage(CurrentPage.DestC, CurrentPage, player);
+                            break;
+                        default:
+                            ReadPage(CurrentPage, CurrentPage, player);
+                            break;
+
+
+                    }
+                }
+            }
+            else
+            {
+                PrintNewline("Game Over...");
+                Console.ReadLine();
+            }
+                
+            
+            
         }
 
     }
